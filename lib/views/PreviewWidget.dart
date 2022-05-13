@@ -27,12 +27,12 @@ class PreviewWidget extends StatelessWidget {
           GetX<PreviewController>(builder: (controller) {
             return Container(
               child: controller.localTracks.length > 0
-                  ? Container(
+                  ? SizedBox(
                       height: itemHeight,
                       width: itemWidth,
                       child: Stack(
                         children: [
-                          HMSVideoView(track: controller.localTracks[0]),
+                          HMSVideoView(track: controller.localTracks[0],matchParent: true,),
                           Positioned(
                             bottom: 20.0,
                             left: itemWidth / 2 - 50.0,
