@@ -123,8 +123,9 @@ class RoomController extends GetxController
         usersList.add(user);
       }
       else{
-        usersList.remove(user);
-        usersList.add(user);
+        int userIndex = usersList.indexOf(user);
+        usersList.removeAt(userIndex);
+        usersList.insert(userIndex, user);
       }
     }
   }
