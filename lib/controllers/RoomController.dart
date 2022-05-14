@@ -173,6 +173,7 @@ class RoomController extends GetxController
       Map<String, dynamic>? arguments}) {
     usersList.clear();
     Get.back();
+    Get.off(() => const HomePage());
   }
 
   void removeUserFromList(HMSPeer peer) {

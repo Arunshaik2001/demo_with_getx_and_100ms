@@ -76,7 +76,8 @@ class HomePage extends StatelessWidget {
                   borderRadius: BorderRadius.circular(16.0),
                 ))),
                 onPressed: () async {
-                  if (!(GetUtils.isBlank(meetingTextController.text) ?? true) &&
+                  if (!(GetUtils.isBlank(meetingTextController.text) ??
+                          true) &&
                       !(GetUtils.isBlank(nameTextController.text) ?? true)) {
                     if (kDebugMode) {
                       print(
@@ -84,8 +85,8 @@ class HomePage extends StatelessWidget {
                     }
                     bool res = await getPermissions();
                     if (res) {
-                      Get.to(() => PreviewWidget(
-                          meetingTextController.text, nameTextController.text));
+                      Get.to(() => PreviewWidget(meetingTextController.text,
+                          nameTextController.text));
                     }
                   }
                 },
