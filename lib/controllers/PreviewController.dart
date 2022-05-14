@@ -36,7 +36,7 @@ class PreviewController extends GetxController
       authToken: token[0]!,
       userName: name,
       endPoint: token[1] == "true" ? "" : "https://qa-init.100ms.live/init",
-    ));
+    ),tag: "");
 
     hmsSdk.preview(config: config);
 

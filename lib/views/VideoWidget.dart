@@ -1,4 +1,3 @@
-
 import 'package:demo_with_getx_and_100ms/controllers/RoomController.dart';
 import 'package:demo_with_getx_and_100ms/models/User.dart';
 import 'package:flutter/material.dart';
@@ -15,7 +14,9 @@ class VideoWidget extends StatelessWidget {
     return GetX<RoomController>(builder: (controller) {
       print("IsVideoOn ${controller.usersList[index]}");
       User user = controller.usersList[index];
-      return (user.peer.isLocal ? controller.isLocalVideoOn.value : user.isVideoOn)
+      return (user.peer.isLocal
+              ? controller.isLocalVideoOn.value
+              : user.isVideoOn)
           ? ClipRRect(
               borderRadius: const BorderRadius.all(Radius.circular(10)),
               child: Column(
@@ -25,27 +26,38 @@ class VideoWidget extends StatelessWidget {
                     width: 400.0,
                     child: HMSVideoView(
                       track: controller.usersList[index].hmsVideoTrack,
-                      matchParent: false,
+                      matchParent: true,
                     ),
                   ),
                   Text(
-                    controller.usersList[index].userName,
+                    controller.usersList[index].peer.name,
                   )
                 ],
               ),
             )
-          : SizedBox(
+          : Container(
               height: 200.0,
               width: 400.0,
-              child: Center(
-                  child: CircleAvatar(
+              alignment: Alignment.center,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  CircleAvatar(
                       backgroundColor: Colors.green,
                       radius: 36,
                       child: Text(
-                        controller.usersList[index].userName,
+                        controller.usersList[index].peer.name[0],
                         style:
                             const TextStyle(fontSize: 36, color: Colors.white),
-                      ))));
+                      )),
+                  const SizedBox(
+                    height: 20.0,
+                  ),
+                  Text(
+                    controller.usersList[index].peer.name,
+                  )
+                ],
+              ));
     });
   }
 }

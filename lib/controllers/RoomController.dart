@@ -32,14 +32,16 @@ class RoomController extends GetxController
     if (token == null) return;
     if (token[0] == null) return;
 
-    HMSConfig config = Get.find();
+    HMSConfig config = HMSConfig(
+      authToken: token[0]!,
+      userName: name,
+      endPoint: token[1] == "true" ? "" : "https://qa-init.100ms.live/init",
+    );
 
     hmsSdk.join(config: config);
 
-
     isVideoOnPreview = Get.find(tag: "isLocalVideoOn");
     isAudioOnPreview = Get.find(tag: "isLocalAudioOn");
-
 
     super.onInit();
   }
@@ -56,9 +58,7 @@ class RoomController extends GetxController
   }
 
   @override
-  void onJoin({required HMSRoom room}) {
-
-  }
+  void onJoin({required HMSRoom room}) {}
 
   @override
   void onMessage({required HMSMessage message}) {
@@ -67,7 +67,9 @@ class RoomController extends GetxController
 
   @override
   void onPeerUpdate({required HMSPeer peer, required HMSPeerUpdate update}) {
-    // TODO: implement onPeerUpdate
+    if (update == HMSPeerUpdate.peerLeft) {
+      removeUserFromList(peer);
+    }
   }
 
   @override
@@ -101,7 +103,6 @@ class RoomController extends GetxController
       {required HMSTrack track,
       required HMSTrackUpdate trackUpdate,
       required HMSPeer peer}) {
-
     isLocalAudioOn.value = isAudioOnPreview.value;
     isLocalAudioOn.refresh();
 
@@ -110,17 +111,19 @@ class RoomController extends GetxController
 
     if (peer.isLocal) {
       if (track.kind == HMSTrackKind.kHMSTrackKindAudio) {
-
       } else {
         print("OnTrackUpdate ${peer.name} video ${track.isMute}");
-
       }
     }
 
     if (track.kind == HMSTrackKind.kHMSTrackKindVideo) {
-      User user = User(track as HMSVideoTrack, peer.name, !track.isMute, peer);
+      User user = User(track as HMSVideoTrack,!track.isMute, peer);
 
       if (!usersList.contains(user)) {
+        usersList.add(user);
+      }
+      else{
+        usersList.remove(user);
         usersList.add(user);
       }
     }
@@ -143,7 +146,7 @@ class RoomController extends GetxController
   }
 
   void toggleVideo() async {
-    var result = await hmsSdk.switchAudio(isOn: isLocalVideoOn.value);
+    var result = await hmsSdk.switchVideo(isOn: isLocalVideoOn.value);
 
     if (result == null) {
       isLocalVideoOn.toggle();
@@ -170,5 +173,10 @@ class RoomController extends GetxController
       Map<String, dynamic>? arguments}) {
     usersList.clear();
     Get.back();
+    Get.off(() => const HomePage());
+  }
+
+  void removeUserFromList(HMSPeer peer) {
+    usersList.removeWhere((element) => peer.peerId == element.peer.peerId);
   }
 }
