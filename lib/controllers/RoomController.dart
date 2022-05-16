@@ -8,6 +8,9 @@ import '../services/RoomService.dart';
 
 class RoomController extends GetxController
     implements HMSUpdateListener, HMSActionResultListener {
+  bool isFirstTimeAudio = true;
+  bool isFirstTimeVideo = true;
+
   List<User> usersList = <User>[].obs;
   RxBool isLocalVideoOn = false.obs;
   RxBool isLocalAudioOn = false.obs;
@@ -58,7 +61,17 @@ class RoomController extends GetxController
   }
 
   @override
-  void onJoin({required HMSRoom room}) {}
+  void onJoin({required HMSRoom room}) {
+    isLocalAudioOn.value = isAudioOnPreview.value;
+    isLocalAudioOn.refresh();
+
+
+    isLocalVideoOn.value = isVideoOnPreview.value;
+    isLocalVideoOn.refresh();
+
+    hmsSdk.switchAudio(isOn: !isLocalAudioOn.value);
+    hmsSdk.switchVideo(isOn: !isLocalVideoOn.value);
+  }
 
   @override
   void onMessage({required HMSMessage message}) {
@@ -74,12 +87,12 @@ class RoomController extends GetxController
 
   @override
   void onReconnected() {
-    // TODO: implement onReconnected
+    Get.snackbar("Reconnected", "We are Back");
   }
 
   @override
   void onReconnecting() {
-    // TODO: implement onReconnecting
+    Get.snackbar("Reconnecting", "Please Wait");
   }
 
   @override
@@ -103,26 +116,36 @@ class RoomController extends GetxController
       {required HMSTrack track,
       required HMSTrackUpdate trackUpdate,
       required HMSPeer peer}) {
-    isLocalAudioOn.value = isAudioOnPreview.value;
-    isLocalAudioOn.refresh();
-
-    isLocalVideoOn.value = isVideoOnPreview.value;
-    isLocalVideoOn.refresh();
+    // isLocalAudioOn.value = isAudioOnPreview.value;
+    // isLocalAudioOn.refresh();
+    //
+    // isLocalVideoOn.value = isVideoOnPreview.value;
+    // isLocalVideoOn.refresh();
 
     if (peer.isLocal) {
-      if (track.kind == HMSTrackKind.kHMSTrackKindAudio) {
-      } else {
-        print("OnTrackUpdate ${peer.name} video ${track.isMute}");
-      }
+
+      // if (track.kind == HMSTrackKind.kHMSTrackKindAudio) {
+      //   Get.snackbar("Audio", "Toggle $isLocalAudioOn ${track.isMute}");
+      //   if (isFirstTimeAudio && isLocalAudioOn.value == track.isMute) {
+      //     hmsSdk.switchAudio(isOn: !isLocalAudioOn.value);
+      //   }
+      //   isFirstTimeAudio = false;
+      // } else {
+      //   print("OnTrackUpdate ${peer.name} video ${track.isMute}");
+      //   if (isFirstTimeVideo && isLocalVideoOn.value != track.isMute) {
+      //     hmsSdk.switchVideo(isOn: !isLocalVideoOn.value);
+      //   }
+      //   isFirstTimeVideo = false;
+      // }
+
     }
 
     if (track.kind == HMSTrackKind.kHMSTrackKindVideo) {
-      User user = User(track as HMSVideoTrack,!track.isMute, peer);
+      User user = User(track as HMSVideoTrack, !track.isMute, peer);
 
       if (!usersList.contains(user)) {
         usersList.add(user);
-      }
-      else{
+      } else {
         int userIndex = usersList.indexOf(user);
         usersList.removeAt(userIndex);
         usersList.insert(userIndex, user);
@@ -151,7 +174,6 @@ class RoomController extends GetxController
 
     if (result == null) {
       isLocalVideoOn.toggle();
-
       for (var element in usersList) {
         if (element.peer.isLocal) {
           element.isVideoOn = isLocalVideoOn.value;
@@ -175,6 +197,8 @@ class RoomController extends GetxController
     usersList.clear();
     Get.back();
     Get.off(() => const HomePage());
+    isFirstTimeVideo = true;
+    isFirstTimeAudio = true;
   }
 
   void removeUserFromList(HMSPeer peer) {
