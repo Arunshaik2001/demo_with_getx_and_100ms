@@ -32,11 +32,11 @@ class PreviewController extends GetxController
     if (token == null) return;
     if (token[0] == null) return;
 
-    HMSConfig config = Get.put(HMSConfig(
+    HMSConfig config = HMSConfig(
       authToken: token[0]!,
       userName: name,
       endPoint: token[1] == "true" ? "" : "https://qa-init.100ms.live/init",
-    ),tag: "");
+    );
 
     hmsSdk.preview(config: config);
 
