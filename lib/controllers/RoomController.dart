@@ -8,7 +8,7 @@ import '../services/RoomService.dart';
 
 class RoomController extends GetxController
     implements HMSUpdateListener, HMSActionResultListener {
-  List<User> usersList = <User>[].obs;
+  RxList<User> usersList = <User>[].obs;
   RxBool isLocalVideoOn = false.obs;
   RxBool isLocalAudioOn = false.obs;
 
@@ -58,7 +58,9 @@ class RoomController extends GetxController
   }
 
   @override
-  void onJoin({required HMSRoom room}) {}
+  void onJoin({required HMSRoom room}) {
+    usersList.clear();
+  }
 
   @override
   void onMessage({required HMSMessage message}) {
@@ -117,15 +119,27 @@ class RoomController extends GetxController
     }
 
     if (track.kind == HMSTrackKind.kHMSTrackKindVideo) {
-      User user = User(track as HMSVideoTrack,!track.isMute, peer);
+      User user = User(track as HMSVideoTrack, !track.isMute, peer);
 
-      if (!usersList.contains(user)) {
-        usersList.add(user);
+      if (trackUpdate == HMSTrackUpdate.trackRemoved) {
+        var newList = <User>[].obs;
+        newList.addAll(usersList);
+
+        newList.remove(user);
+
+        usersList.clear();
+        usersList.addAll(newList);
+      } else {
+        if (!usersList.contains(user)) {
+          usersList.add(user);
+        } else {
+          int index = usersList
+              .indexWhere((element) => element.peer.peerId == user.peer.peerId);
+          usersList[index] = user;
+        }
       }
-      else{
-        usersList.remove(user);
-        usersList.add(user);
-      }
+
+      //usersList.refresh();
     }
   }
 
@@ -171,11 +185,15 @@ class RoomController extends GetxController
   void onSuccess(
       {HMSActionResultListenerMethod? methodType,
       Map<String, dynamic>? arguments}) {
-    usersList.clear();
     Get.back();
   }
 
   void removeUserFromList(HMSPeer peer) {
-    usersList.removeWhere((element) => peer.peerId == element.peer.peerId);
+    // int index = usersList.indexWhere((element) => element.peer.peerId == peer.peerId);
+    //
+    // usersList.removeAt(index);
+    //
+    // //usersList.removeWhere((element) => peer.peerId == element.peer.peerId);
+    // usersList.refresh();
   }
 }

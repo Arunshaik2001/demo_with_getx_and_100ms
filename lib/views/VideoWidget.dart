@@ -1,5 +1,6 @@
 import 'package:demo_with_getx_and_100ms/controllers/RoomController.dart';
 import 'package:demo_with_getx_and_100ms/models/User.dart';
+import 'package:demo_with_getx_and_100ms/views/VideoView.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get_state_manager/src/rx_flutter/rx_getx_widget.dart';
 import 'package:hmssdk_flutter/hmssdk_flutter.dart';
@@ -12,7 +13,7 @@ class VideoWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GetX<RoomController>(builder: (controller) {
-      print("IsVideoOn ${controller.usersList[index]}");
+      print("IsVideoOff ${controller.usersList[index].hmsVideoTrack.isMute} ${controller.usersList[index].peer.name}");
       User user = controller.usersList[index];
       return (user.peer.isLocal
               ? controller.isLocalVideoOn.value
@@ -24,10 +25,7 @@ class VideoWidget extends StatelessWidget {
                   SizedBox(
                     height: 200.0,
                     width: 400.0,
-                    child: HMSVideoView(
-                      track: controller.usersList[index].hmsVideoTrack,
-                      matchParent: true,
-                    ),
+                    child: VideoView(track),
                   ),
                   Text(
                     controller.usersList[index].peer.name,

@@ -18,13 +18,13 @@ class RoomWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       body: GetX<RoomController>(builder: (controller) {
-        return ListView.builder(
+        return GridView.builder(
             itemCount: controller.usersList.length,
             itemBuilder: (ctx, index) {
               return Card(
-                  child:
-                  SizedBox(height: 250.0, child: VideoWidget(index)));
-            });
+                  key: Key(controller.usersList[index].peer.peerId.toString()),
+                  child: SizedBox(height: 250.0, child: VideoWidget(index)));
+            }, gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 2),);
       }),
       bottomNavigationBar: GetX<RoomController>(builder: (controller) {
         return BottomNavigationBar(
