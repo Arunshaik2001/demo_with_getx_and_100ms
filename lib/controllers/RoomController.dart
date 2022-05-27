@@ -20,7 +20,7 @@ class RoomController extends GetxController
 
   RoomController(this.url, this.name);
 
-  HMSSDK hmsSdk = Get.find();
+  HMSSDK hmsSdk = HMSSDK();
 
   RxBool isVideoOnPreview = false.obs;
   RxBool isAudioOnPreview = false.obs;

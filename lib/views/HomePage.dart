@@ -13,7 +13,7 @@ class HomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final meetingTextController = TextEditingController(
-        text: "https://shaik.app.100ms.live/meeting/ajk-stp-ebs");
+        text: "https://shaik-ahron.app.100ms.live/meeting/uin-xzz-hjg");
     final nameTextController = TextEditingController();
 
     return SafeArea(
@@ -85,7 +85,7 @@ class HomePage extends StatelessWidget {
                     }
                     bool res = await getPermissions();
                     if (res) {
-                      Get.to(() => PreviewWidget(meetingTextController.text,
+                      Get.to(() => RoomWidget(meetingTextController.text,
                           nameTextController.text));
                     }
                   }
