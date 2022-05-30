@@ -1,7 +1,6 @@
 import 'dart:io';
 
 import 'package:demo_with_getx_and_100ms/views/PreviewWidget.dart';
-import 'package:demo_with_getx_and_100ms/views/RoomWidget.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -13,7 +12,7 @@ class HomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final meetingTextController = TextEditingController(
-        text: "https://shaik.app.100ms.live/meeting/ajk-stp-ebs");
+        text: "https://yogi.app.100ms.live/meeting/ssz-eqr-eaa");
     final nameTextController = TextEditingController();
 
     return SafeArea(

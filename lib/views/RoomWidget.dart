@@ -13,18 +13,17 @@ class RoomWidget extends StatelessWidget {
     roomController = Get.put(RoomController(meetingUrl, userName));
   }
 
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: GetX<RoomController>(builder: (controller) {
-        return GridView.builder(
+        return ListView.builder(
             itemCount: controller.usersList.length,
             itemBuilder: (ctx, index) {
               return Card(
                   key: Key(controller.usersList[index].peer.peerId.toString()),
                   child: SizedBox(height: 250.0, child: VideoWidget(index)));
-            }, gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 2),);
+            });
       }),
       bottomNavigationBar: GetX<RoomController>(builder: (controller) {
         return BottomNavigationBar(

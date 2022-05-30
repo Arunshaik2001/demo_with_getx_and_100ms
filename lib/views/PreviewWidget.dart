@@ -32,7 +32,7 @@ class PreviewWidget extends StatelessWidget {
                       width: itemWidth,
                       child: Stack(
                         children: [
-                          HMSVideoView(track: controller.localTracks[0],matchParent: true,),
+                          HMSVideoView(track: controller.localTracks[0],matchParent: true,peerName: "",),
                           Positioned(
                             bottom: 20.0,
                             left: itemWidth / 2 - 50.0,

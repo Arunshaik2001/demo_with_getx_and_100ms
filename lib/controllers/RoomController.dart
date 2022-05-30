@@ -42,7 +42,6 @@ class RoomController extends GetxController
 
     isVideoOnPreview = Get.find(tag: "isLocalVideoOn");
     isAudioOnPreview = Get.find(tag: "isLocalAudioOn");
-
     super.onInit();
   }
 
@@ -195,5 +194,42 @@ class RoomController extends GetxController
     //
     // //usersList.removeWhere((element) => peer.peerId == element.peer.peerId);
     // usersList.refresh();
+  }
+
+      
+      
+      
+  @override
+  void onLocalAudioStats({required HMSLocalAudioStats hmsLocalAudioStats, required HMSLocalAudioTrack track, required HMSPeer peer}) {
+    // TODO: implement onLocalAudioStats
+  }
+
+      
+      
+      
+  @override
+  void onLocalVideoStats({required HMSLocalVideoStats hmsLocalVideoStats, required HMSLocalVideoTrack track, required HMSPeer peer}) {
+    // TODO: implement onLocalVideoStats
+  }
+
+  @override
+  void onRTCStats({required HMSRTCStatsReport hmsrtcStatsReport}) {
+    // TODO: implement onRTCStats
+  }
+
+      
+      
+      
+  @override
+  void onRemoteAudioStats({required HMSRemoteAudioStats hmsRemoteAudioStats, required HMSRemoteAudioTrack track, required HMSPeer peer}) {
+    // TODO: implement onRemoteAudioStats
+  }
+
+      
+      
+      
+  @override
+  void onRemoteVideoStats({required HMSRemoteVideoStats hmsRemoteVideoStats, required HMSRemoteVideoTrack track, required HMSPeer peer}) {
+    // TODO: implement onRemoteVideoStats
   }
 }
