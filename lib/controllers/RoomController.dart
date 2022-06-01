@@ -1,6 +1,7 @@
 import 'package:demo_with_getx_and_100ms/models/User.dart';
 import 'package:demo_with_getx_and_100ms/views/HomePage.dart';
 import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:hmssdk_flutter/hmssdk_flutter.dart';
 
@@ -11,6 +12,7 @@ class RoomController extends GetxController
   RxList<User> usersList = <User>[].obs;
   RxBool isLocalVideoOn = false.obs;
   RxBool isLocalAudioOn = false.obs;
+  List<Widget> widgets = <Widget>[].obs;
 
   String url;
   String name;
@@ -60,6 +62,15 @@ class RoomController extends GetxController
   @override
   void onJoin({required HMSRoom room}) {
     usersList.clear();
+    isLocalAudioOn.value = isAudioOnPreview.value;
+    isLocalAudioOn.refresh();
+
+
+    isLocalVideoOn.value = isVideoOnPreview.value;
+    isLocalVideoOn.refresh();
+
+    hmsSdk.switchAudio(isOn: !isLocalAudioOn.value);
+    hmsSdk.switchVideo(isOn: !isLocalVideoOn.value);
   }
 
   @override
@@ -105,11 +116,11 @@ class RoomController extends GetxController
       {required HMSTrack track,
       required HMSTrackUpdate trackUpdate,
       required HMSPeer peer}) {
-    isLocalAudioOn.value = isAudioOnPreview.value;
-    isLocalAudioOn.refresh();
-
-    isLocalVideoOn.value = isVideoOnPreview.value;
-    isLocalVideoOn.refresh();
+    // isLocalAudioOn.value = isAudioOnPreview.value;
+    // isLocalAudioOn.refresh();
+    //
+    // isLocalVideoOn.value = isVideoOnPreview.value;
+    // isLocalVideoOn.refresh();
 
     if (peer.isLocal) {
       if (track.kind == HMSTrackKind.kHMSTrackKindAudio) {
@@ -122,15 +133,10 @@ class RoomController extends GetxController
       User user = User(track as HMSVideoTrack, !track.isMute, peer);
 
       if (trackUpdate == HMSTrackUpdate.trackRemoved) {
-        var newList = <User>[].obs;
-        newList.addAll(usersList);
-
-        newList.remove(user);
-
-        usersList.clear();
-        usersList.addAll(newList);
+        usersList.remove(user);
       } else {
         if (!usersList.contains(user)) {
+          widgets.add(HMSVideoView(track: track,peerName: "${peer.name}",));
           usersList.add(user);
         } else {
           int index = usersList
@@ -186,6 +192,7 @@ class RoomController extends GetxController
       {HMSActionResultListenerMethod? methodType,
       Map<String, dynamic>? arguments}) {
     Get.back();
+    Get.off(() => const HomePage());
   }
 
   void removeUserFromList(HMSPeer peer) {
@@ -195,5 +202,30 @@ class RoomController extends GetxController
     //
     // //usersList.removeWhere((element) => peer.peerId == element.peer.peerId);
     // usersList.refresh();
+  }
+
+  @override
+  void onLocalAudioStats({required HMSLocalAudioStats hmsLocalAudioStats, required HMSLocalAudioTrack track, required HMSPeer peer}) {
+    // TODO: implement onLocalAudioStats
+  }
+
+  @override
+  void onLocalVideoStats({required HMSLocalVideoStats hmsLocalVideoStats, required HMSLocalVideoTrack track, required HMSPeer peer}) {
+    // TODO: implement onLocalVideoStats
+  }
+
+  @override
+  void onRTCStats({required HMSRTCStatsReport hmsrtcStatsReport}) {
+    // TODO: implement onRTCStats
+  }
+
+  @override
+  void onRemoteAudioStats({required HMSRemoteAudioStats hmsRemoteAudioStats, required HMSRemoteAudioTrack track, required HMSPeer peer}) {
+    // TODO: implement onRemoteAudioStats
+  }
+
+  @override
+  void onRemoteVideoStats({required HMSRemoteVideoStats hmsRemoteVideoStats, required HMSRemoteVideoTrack track, required HMSPeer peer}) {
+    // TODO: implement onRemoteVideoStats
   }
 }
